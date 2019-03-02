@@ -9,7 +9,7 @@ contract AtlantisToken is ERC20, ERC20Detailed {
         public
         ERC20Detailed("Atlantis Gold", "ANG", 18)
     {
-        uint256 totalAmount = 10000000000 * (10**uint(decimals()));
+        uint256 totalAmount = 500e6 * (10**uint(decimals()));
         _mint(msg.sender, totalAmount);
     }
 }
