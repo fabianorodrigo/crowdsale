@@ -1,4 +1,4 @@
-const { time } = require('openzeppelin-test-helpers');
+const { shouldFail, time } = require('openzeppelin-test-helpers');
 
 const AtlantisToken = artifacts.require('AtlantisToken');
 const AtlantisCrowdsale = artifacts.require('AtlantisCrowdsale');
@@ -21,10 +21,15 @@ contract('AtlantisCrowdsale', function ([_, wallet, addr1, addr2]) {
         await this.token.transfer(this.crowdsale.address, web3.utils.toWei('10000000'));
     });
 
-    it('should work for investors', async function () {
+    it('should successed for >= 1 ETH', async function () {
         time.increaseTo(this.startTime);
         await this.crowdsale.send(web3.utils.toWei('1'), { from: addr1 });
 
         (await this.token.balanceOf(addr1)).should.be.bignumber.equal(web3.utils.toWei('10000'));
+    });
+
+    it('should fail for < 1 ETH', async function () {
+        time.increaseTo(this.startTime);
+        await shouldFail.reverting(this.crowdsale.send(web3.utils.toWei('0.5'), { from: addr1 }));
     });
 });
