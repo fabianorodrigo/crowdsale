@@ -1,6 +1,7 @@
-pragma solidity ^0.5.2;
 
 // File: openzeppelin-solidity/contracts/ownership/Ownable.sol
+
+pragma solidity ^0.5.0;
 
 /**
  * @title Ownable
@@ -73,7 +74,9 @@ contract Ownable {
     }
 }
 
-// File: node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol
+// File: openzeppelin-solidity/contracts/math/SafeMath.sol
+
+pragma solidity ^0.5.0;
 
 /**
  * @title SafeMath
@@ -139,7 +142,9 @@ library SafeMath {
     }
 }
 
-// File: node_modules/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
+// File: openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
+
+pragma solidity ^0.5.0;
 
 /**
  * @title ERC20 interface
@@ -163,7 +168,11 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-// File: node_modules/openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol
+// File: openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol
+
+pragma solidity ^0.5.0;
+
+
 
 /**
  * @title SafeERC20
@@ -186,7 +195,7 @@ library SafeERC20 {
         // safeApprove should only be called when setting an initial allowance,
         // or when resetting it to zero. To increase and decrease it, use
         // 'safeIncreaseAllowance' and 'safeDecreaseAllowance'
-        require((value == 0) || (token.allowance(msg.sender, spender) == 0));
+        require((value == 0) || (token.allowance(address(this), spender) == 0));
         require(token.approve(spender, value));
     }
 
@@ -201,7 +210,9 @@ library SafeERC20 {
     }
 }
 
-// File: node_modules/openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol
+// File: openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol
+
+pragma solidity ^0.5.0;
 
 /**
  * @title Helps contracts guard against reentrancy attacks.
@@ -234,7 +245,13 @@ contract ReentrancyGuard {
     }
 }
 
-// File: node_modules/openzeppelin-solidity/contracts/crowdsale/Crowdsale.sol
+// File: openzeppelin-solidity/contracts/crowdsale/Crowdsale.sol
+
+pragma solidity ^0.5.0;
+
+
+
+
 
 /**
  * @title Crowdsale
@@ -430,6 +447,10 @@ contract Crowdsale is ReentrancyGuard {
 
 // File: openzeppelin-solidity/contracts/crowdsale/validation/TimedCrowdsale.sol
 
+pragma solidity ^0.5.0;
+
+
+
 /**
  * @title TimedCrowdsale
  * @dev Crowdsale accepting contributions only within a time frame.
@@ -505,6 +526,10 @@ contract TimedCrowdsale is Crowdsale {
 
 // File: openzeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol
 
+pragma solidity ^0.5.0;
+
+
+
 /**
  * @title CappedCrowdsale
  * @dev Crowdsale with a limit for total contributions.
@@ -549,152 +574,13 @@ contract CappedCrowdsale is Crowdsale {
     }
 }
 
-// File: node_modules/openzeppelin-solidity/contracts/access/Roles.sol
-
-/**
- * @title Roles
- * @dev Library for managing addresses assigned to a Role.
- */
-library Roles {
-    struct Role {
-        mapping (address => bool) bearer;
-    }
-
-    /**
-     * @dev give an account access to this role
-     */
-    function add(Role storage role, address account) internal {
-        require(account != address(0));
-        require(!has(role, account));
-
-        role.bearer[account] = true;
-    }
-
-    /**
-     * @dev remove an account's access to this role
-     */
-    function remove(Role storage role, address account) internal {
-        require(account != address(0));
-        require(has(role, account));
-
-        role.bearer[account] = false;
-    }
-
-    /**
-     * @dev check if an account has this role
-     * @return bool
-     */
-    function has(Role storage role, address account) internal view returns (bool) {
-        require(account != address(0));
-        return role.bearer[account];
-    }
-}
-
-// File: node_modules/openzeppelin-solidity/contracts/access/roles/CapperRole.sol
-
-contract CapperRole {
-    using Roles for Roles.Role;
-
-    event CapperAdded(address indexed account);
-    event CapperRemoved(address indexed account);
-
-    Roles.Role private _cappers;
-
-    constructor () internal {
-        _addCapper(msg.sender);
-    }
-
-    modifier onlyCapper() {
-        require(isCapper(msg.sender));
-        _;
-    }
-
-    function isCapper(address account) public view returns (bool) {
-        return _cappers.has(account);
-    }
-
-    function addCapper(address account) public onlyCapper {
-        _addCapper(account);
-    }
-
-    function renounceCapper() public {
-        _removeCapper(msg.sender);
-    }
-
-    function _addCapper(address account) internal {
-        _cappers.add(account);
-        emit CapperAdded(account);
-    }
-
-    function _removeCapper(address account) internal {
-        _cappers.remove(account);
-        emit CapperRemoved(account);
-    }
-}
-
-// File: openzeppelin-solidity/contracts/crowdsale/validation/IndividuallyCappedCrowdsale.sol
-
-/**
- * @title IndividuallyCappedCrowdsale
- * @dev Crowdsale with per-beneficiary caps.
- */
-contract IndividuallyCappedCrowdsale is Crowdsale, CapperRole {
-    using SafeMath for uint256;
-
-    mapping(address => uint256) private _contributions;
-    mapping(address => uint256) private _caps;
-
-    /**
-     * @dev Sets a specific beneficiary's maximum contribution.
-     * @param beneficiary Address to be capped
-     * @param cap Wei limit for individual contribution
-     */
-    function setCap(address beneficiary, uint256 cap) external onlyCapper {
-        _caps[beneficiary] = cap;
-    }
-
-    /**
-     * @dev Returns the cap of a specific beneficiary.
-     * @param beneficiary Address whose cap is to be checked
-     * @return Current cap for individual beneficiary
-     */
-    function getCap(address beneficiary) public view returns (uint256) {
-        return _caps[beneficiary];
-    }
-
-    /**
-     * @dev Returns the amount contributed so far by a specific beneficiary.
-     * @param beneficiary Address of contributor
-     * @return Beneficiary contribution so far
-     */
-    function getContribution(address beneficiary) public view returns (uint256) {
-        return _contributions[beneficiary];
-    }
-
-    /**
-     * @dev Extend parent behavior requiring purchase to respect the beneficiary's funding cap.
-     * @param beneficiary Token purchaser
-     * @param weiAmount Amount of wei contributed
-     */
-    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal view {
-        super._preValidatePurchase(beneficiary, weiAmount);
-        require(_contributions[beneficiary].add(weiAmount) <= _caps[beneficiary]);
-    }
-
-    /**
-     * @dev Extend parent behavior to update beneficiary contributions
-     * @param beneficiary Token purchaser
-     * @param weiAmount Amount of wei contributed
-     */
-    function _updatePurchasingState(address beneficiary, uint256 weiAmount) internal {
-        super._updatePurchasingState(beneficiary, weiAmount);
-        _contributions[beneficiary] = _contributions[beneficiary].add(weiAmount);
-    }
-}
-
 // File: contracts/MinLimitCrowdsale.sol
 
-contract MinLimitCrowdsale is IndividuallyCappedCrowdsale {
+pragma solidity ^0.5.4;
+
+
+
+contract MinLimitCrowdsale is Crowdsale {
     uint256 private _minLimit;
 
     constructor(uint256 minLimit) public {
@@ -707,11 +593,18 @@ contract MinLimitCrowdsale is IndividuallyCappedCrowdsale {
 
     function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal view {
         super._preValidatePurchase(beneficiary, weiAmount);
-        require(getContribution(beneficiary).add(weiAmount) >= _minLimit);
+        require(weiAmount >= _minLimit);
     }
 }
 
 // File: contracts/AtlantisCrowdsale.sol
+
+pragma solidity ^0.5.4;
+
+
+
+
+
 
 contract AtlantisCrowdsale is
     Ownable,

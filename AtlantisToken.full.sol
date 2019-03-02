@@ -1,6 +1,7 @@
-pragma solidity ^0.5.2;
 
-// File: node_modules/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
+// File: openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
+
+pragma solidity ^0.5.0;
 
 /**
  * @title ERC20 interface
@@ -24,7 +25,9 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-// File: node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol
+// File: openzeppelin-solidity/contracts/math/SafeMath.sol
+
+pragma solidity ^0.5.0;
 
 /**
  * @title SafeMath
@@ -91,6 +94,10 @@ library SafeMath {
 }
 
 // File: openzeppelin-solidity/contracts/token/ERC20/ERC20.sol
+
+pragma solidity ^0.5.0;
+
+
 
 /**
  * @title Standard ERC20 token
@@ -277,6 +284,9 @@ contract ERC20 is IERC20 {
 
 // File: openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol
 
+pragma solidity ^0.5.0;
+
+
 /**
  * @title ERC20Detailed token
  * @dev The decimals are only for visualization purposes.
@@ -317,6 +327,11 @@ contract ERC20Detailed is IERC20 {
 }
 
 // File: contracts/AtlantisToken.sol
+
+pragma solidity ^0.5.4;
+
+
+
 
 contract AtlantisToken is ERC20, ERC20Detailed {
     constructor()

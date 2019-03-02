@@ -1,9 +1,9 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.5.4;
 
-import "openzeppelin-solidity/contracts/crowdsale/validation/IndividuallyCappedCrowdsale.sol";
+import "openzeppelin-solidity/contracts/crowdsale/Crowdsale.sol";
 
 
-contract MinLimitCrowdsale is IndividuallyCappedCrowdsale {
+contract MinLimitCrowdsale is Crowdsale {
     uint256 private _minLimit;
 
     constructor(uint256 minLimit) public {
@@ -16,6 +16,6 @@ contract MinLimitCrowdsale is IndividuallyCappedCrowdsale {
 
     function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal view {
         super._preValidatePurchase(beneficiary, weiAmount);
-        require(getContribution(beneficiary).add(weiAmount) >= _minLimit);
+        require(weiAmount >= _minLimit);
     }
 }
